@@ -1,5 +1,6 @@
 package org.example.configuration;
 
+import org.example.security.SecurityConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -12,7 +13,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class SpringInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{SecurityConfiguration.class, SpringConfiguration.class,
+        return new Class[]{SecurityConfig.class, SpringConfiguration.class,
                 HibernatePersistenceConfiguration.class, EmailManagerConfiguration.class};
     }
 
