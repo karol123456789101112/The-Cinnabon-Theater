@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,16 +19,18 @@ import java.util.Set;
 @Service("myAppUserDetailsService")
 public class MyAppUserDetailsService implements UserDetailsService {
 
+    private final AppUserRepository appUserRepository;
+
     private AppUserService appUserService;
     @Autowired
-    public MyAppUserDetailsService(AppUserService appUserService) {
-        this.appUserService = appUserService;
+    public MyAppUserDetailsService(AppUserRepository appUserRepository) {
+        this.appUserRepository = appUserRepository;
     }
 
-    @Transactional(readOnly=true)
     @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-        org.example.domain.AppUser appUser = appUserService.findByEmail(email);
+        org.example.domain.AppUser appUser = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Użytkownik nie znaleziony: " + email));
         List<GrantedAuthority> authorities = buildUserAuthority(appUser.getAppUserRole());
         return buildUserForAuthentication(appUser, authorities);
     }
