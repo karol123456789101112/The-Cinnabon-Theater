@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -126,7 +127,7 @@ public class AppUserServiceImpl implements AppUserService{
         return appUserRepository.findById(id);
     }
 
-    public AppUser findByEmail(String email) {
+    public Optional<AppUser> findByEmail(String email) {
         return appUserRepository.findByEmail(email);
     }
 

@@ -6,6 +6,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.example.domain.AppUser;
 import java.util.List;
+import java.util.Optional;
 
 public interface AppUserService {
 
@@ -21,6 +22,6 @@ public interface AppUserService {
 
     AppUser getAppUser(long id);
 
-    AppUser findByEmail(String email);
+    Optional<AppUser> findByEmail(String email);
 }
 
