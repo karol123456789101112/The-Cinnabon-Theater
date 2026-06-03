@@ -11,12 +11,16 @@ public class EmailManagerConfiguration {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
+
+        String USERNAME = System.getenv("MAIL_USERNAME");
+        String PASSWORD = System.getenv("MAIL_PASSWORD");
+
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(465);
 
-        mailSender.setUsername("karol.kwapinski2203@gmail.com");
-        mailSender.setPassword("psqhihizfbprrnxq");
+        mailSender.setUsername(USERNAME);
+        mailSender.setPassword(PASSWORD);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
