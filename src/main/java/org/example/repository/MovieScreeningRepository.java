@@ -1,4 +1,8 @@
 package org.example.repository;
 
-public interface MovieScreeningRepository {
+import org.example.domain.MovieScreening;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MovieScreeningRepository extends JpaRepository<MovieScreening, Long> {
+
 }

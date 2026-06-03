@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addUser } from "../view/api/userApi";
+import { addUser } from "../model/userApi";
 
 export function useAppUserViewModel() {
     const [form, setForm] = useState({

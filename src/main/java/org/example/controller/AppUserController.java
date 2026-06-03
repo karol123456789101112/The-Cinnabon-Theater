@@ -36,6 +36,8 @@ public class AppUserController {
         System.out.println("COS");
 
         if (!reCaptchaService.verify(dto.getRecaptchaToken())) {
+
+            System.out.println("NOT WORKING");
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("Invalid reCAPTCHA");

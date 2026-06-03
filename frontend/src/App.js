@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import RegisterPage from './model/RegistrationPage';
-import LoginPage from './model/LoginPage';
+import RegisterPage from './view/RegistrationPage';
+import LoginPage from './view/LoginPage';
 import { AuthProvider, useAuth } from './security/authContext';
 import { Navigate } from 'react-router-dom';
+import MovieScreeningsPage from "./view/MovieScreeningsPage";
 
 function AppContent() {
 
@@ -20,6 +21,7 @@ function AppContent() {
           />
 
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<MovieScreeningsPage />} />
           <Route path="*" element={<Navigate to="/" />} />
       </Routes>
   );
