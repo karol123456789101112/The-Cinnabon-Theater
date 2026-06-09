@@ -5,6 +5,8 @@ import LoginPage from './view/LoginPage';
 import { AuthProvider, useAuth } from './security/authContext';
 import { Navigate } from 'react-router-dom';
 import MovieScreeningsPage from "./view/MovieScreeningsPage";
+import ReservationPage from "./view/ReservationPage";
+import PaymentPage from "./view/PaymentPage";
 
 function AppContent() {
 
@@ -22,7 +24,9 @@ function AppContent() {
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<MovieScreeningsPage />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/screenings/:id" element={<ReservationPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="*" element={<MovieScreeningsPage />} />
       </Routes>
   );
 }
