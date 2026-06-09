@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.Dto.MovieScreeningDto;
 import org.example.Dto.ScreeningByDateDto;
 import org.example.service.MovieScreeningService;
 import org.springframework.web.bind.annotation.GetMapping;

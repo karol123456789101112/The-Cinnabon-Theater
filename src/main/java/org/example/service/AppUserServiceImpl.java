@@ -55,7 +55,7 @@ public class AppUserServiceImpl implements AppUserService{
         String link = "http://localhost:8081/activate?token=" + token;
 
         emailService.sendMail(
-                dto.getEmail(),
+                dto.email(),
                 "Witaj w The Cinnabon Theater!\n" +
                         "\n" +
                         "Kliknij link aby aktywować konto:\n" +
@@ -69,18 +69,18 @@ public class AppUserServiceImpl implements AppUserService{
 
     private AppUser createUser(AppUserDto dto) {
 
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
+        if (!dto.password().equals(dto.confirmPassword())) {
             throw new IllegalArgumentException("Passwords do not match");
         }
 
         AppUser user = new AppUser();
 
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
-        user.setTelephone(dto.getTelephone());
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setEmail(dto.email());
+        user.setTelephone(dto.telephone());
 
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPassword(passwordEncoder.encode(dto.password()));
 
         AppUserRole role = appUserRoleRepository.findByRole("ROLE_USER");
         user.getAppUserRole().add(role);

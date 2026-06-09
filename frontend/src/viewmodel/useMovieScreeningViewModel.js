@@ -7,7 +7,6 @@ export function useMovieScreeningViewModel(){
     useEffect( () => {
         const fetchData = async () => {
             const data = await getMovieScreenings();
-            console.log("Data: ", data);
             setMovieScreenings(data);
         }
         fetchData();

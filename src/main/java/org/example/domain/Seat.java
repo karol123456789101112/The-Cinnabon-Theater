@@ -7,17 +7,23 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "screening_room")
 @Data
-public class ScreeningRoom {
+public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
     @NotNull
-    private long roomNumber;
+    private String row;
 
-    @OneToMany(mappedBy = "screeningRoom")
-    private List<Seat> seats;
+    @NotNull
+    private int number;
+
+    @ManyToOne
+    @JoinColumn(name = "screening_room_id")
+    private ScreeningRoom screeningRoom;
+
+    @OneToMany(mappedBy = "seat")
+    private List<Ticket> tickets;
 }

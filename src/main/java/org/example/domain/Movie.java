@@ -22,7 +22,6 @@ public class Movie {
     private String name;
 
     @NotNull
-    @Size(min = 60, max = 360)
     private long duration;
 
     @OneToMany(mappedBy = "movie")

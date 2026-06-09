@@ -42,40 +42,43 @@ public class MovieScreeningServiceImpl implements MovieScreeningService{
 
             // sprawdź czy istnieje film
             if (!moviesByDate.containsKey(movie.getId())) {
-                MovieGroupDto dto = new MovieGroupDto();
-                dto.setMovieId(movie.getId());
-                dto.setTitle(movie.getName());
-                dto.setDuration(movie.getDuration());
-                dto.setScreenings(new ArrayList<>());
+
+                MovieGroupDto dto = new MovieGroupDto(
+                        movie.getId(),
+                        movie.getName(),
+                        movie.getDuration(),
+                        new ArrayList<>()
+                );
 
                 moviesByDate.put(movie.getId(), dto);
             }
 
-            ScreeningTimeDto dto = new ScreeningTimeDto();
-
-            dto.setId(ms.getId());
-            dto.setTime(time);
+            ScreeningTimeDto dto = new ScreeningTimeDto(
+                    ms.getId(),
+                    time
+            );
 
             // dodaj godzinę
             moviesByDate
                     .get(movie.getId())
-                    .getScreenings()
+                    .screenings()
                     .add(dto);
         }
 
         // sortowanie godzin seansów
         for (Map<Long, MovieGroupDto> moviesByDate : grouped.values()) {
             for (MovieGroupDto movieDto : moviesByDate.values()) {
-                movieDto.getScreenings().sort(Comparator.comparing(ScreeningTimeDto::getTime));
+                movieDto.screenings().sort(Comparator.comparing(ScreeningTimeDto::time));
             }
         }
 
         return grouped.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(dateEntry -> {
-                    ScreeningByDateDto dto = new ScreeningByDateDto();
-                    dto.setDate(dateEntry.getKey());
-                    dto.setMovies(new ArrayList<>(dateEntry.getValue().values()));
+                    ScreeningByDateDto dto = new ScreeningByDateDto(
+                            dateEntry.getKey(),
+                            new ArrayList<>(dateEntry.getValue().values())
+                    );
                     return dto;
                 })
                 .toList();
