@@ -12,8 +12,8 @@ public interface AppUserService {
 
     void addAppUser(AppUserDto appUserDto);
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') OR (#appUser.login == principal.username)")
-    void editAppUser(@Param("appUser") AppUser appUser);
+//    @PreAuthorize("hasRole('ROLE_ADMIN') OR (#appUser.login == principal.username)")
+//    void editAppUser(@Param("appUser") AppUser appUser);
 
     List<AppUser> listAppUser();
 

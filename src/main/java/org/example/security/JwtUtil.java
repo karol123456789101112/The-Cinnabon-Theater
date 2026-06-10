@@ -3,14 +3,10 @@ package org.example.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.example.domain.AppUserRole;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
-
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.example.domain.AppUser;
 
@@ -21,14 +17,9 @@ public class JwtUtil {
 
     public String generateToken(AppUser user) {
 
-        Set<String> roles = user.getAppUserRole()
-                .stream()
-                .map(AppUserRole::getRole)
-                .collect(Collectors.toSet());
-
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("roles", roles)
+                .claim("role", user.getRole())
                 .claim("userId", user.getId())
                 .claim("firstName", user.getFirstName())
                 .setIssuedAt(new Date())

@@ -36,6 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/tickets/addTicket").hasRole("USER")
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
