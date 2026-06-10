@@ -1,9 +1,11 @@
-import {deleteUser, getAllUsers, toggleAdmin} from "../model/adminApi";
+import {deleteUser, getAllMovies, getAllMovieScreenings, getAllUsers, toggleAdmin} from "../model/adminApi";
 import {useEffect, useState} from "react";
 
 export function useAdminViewModel(){
 
     const [allUsers, setAllUsers] = useState([])
+    const [allMovieScreenings, setAllMovieScreenings] = useState([])
+    const [allMovies, setAllMovies] = useState([]);
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true);
 
@@ -38,16 +40,40 @@ export function useAdminViewModel(){
         }
     };
 
+    const fetchMovieScreenings = async () => {
+        try{
+            const movieScreenings = await getAllMovieScreenings();
+            setAllMovieScreenings(movieScreenings);
+        } catch (err) {
+            console.error("Error while fetching movie screenings " + err);
+        }
+    }
+
+    const fetchMovies = async () => {
+        try{
+            const movies = await getAllMovies();
+            setAllMovies(movies);
+        } catch (err) {
+            console.error("Error while fetching movies " + err);
+        }
+    }
+
     useEffect(() => {
         fetchUsers();
+        fetchMovieScreenings();
+        fetchMovies();
     }, []);
 
     return {
         allUsers,
+        allMovieScreenings,
+        allMovies,
         error,
         loading,
         fetchUsers,
         handleDeleteUser,
-        handleToggleRole
+        handleToggleRole,
+        fetchMovieScreenings,
+        fetchMovies
     }
 }

@@ -35,3 +35,25 @@ export const toggleAdmin = async (id) => {
         return await response.json();
     }
 };
+
+export const getAllMovieScreenings = async () => {
+    const response = await fetch("http://localhost:8081/movieScreenings/all");
+    const data = await response.json();
+
+    if(!response.ok){
+        throw data;
+    }
+
+    return data;
+}
+
+export const getAllMovies = async () => {
+    const response = await fetch("http://localhost:8081/movies");
+    const movies = await response.json();
+
+    if(!response.ok){
+        throw movies
+    }
+
+    return movies;
+}

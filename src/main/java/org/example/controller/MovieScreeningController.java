@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.Dto.MovieScreeningViewDto;
 import org.example.Dto.ScreeningByDateDto;
 import org.example.service.MovieScreeningService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,4 +21,7 @@ public class MovieScreeningController {
     public List<ScreeningByDateDto> getMovieScreenings(){
         return movieScreeningService.getMovieScreenings();
     }
+
+    @GetMapping("/all")
+    public List<MovieScreeningViewDto> getAllMovieScreenings(){return movieScreeningService.getAllMovieScreenings();}
 }

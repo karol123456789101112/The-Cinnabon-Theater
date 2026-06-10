@@ -2,6 +2,7 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.Dto.MovieGroupDto;
+import org.example.Dto.MovieScreeningViewDto;
 import org.example.Dto.ScreeningByDateDto;
 import org.example.Dto.ScreeningTimeDto;
 import org.example.domain.Movie;
@@ -84,5 +85,17 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
                         )
                 )
                 .toList();
+    }
+
+    public List<MovieScreeningViewDto> getAllMovieScreenings(){
+        List<MovieScreening> allMovieScreenings = movieScreeningRepository.findAll();
+
+        List<MovieScreeningViewDto> dto = new ArrayList<>();
+
+        for(MovieScreening movieScreening : allMovieScreenings){
+            dto.add(new MovieScreeningViewDto(movieScreening.getId(), movieScreening.getStartTime()));
+        }
+
+        return dto;
     }
 }

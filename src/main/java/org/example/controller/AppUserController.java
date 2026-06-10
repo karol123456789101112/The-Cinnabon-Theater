@@ -53,7 +53,6 @@ public class AppUserController {
 
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id){
-        System.out.println("DZIALA controller");
 
         appUserService.deleteUser(id);
         return ResponseEntity.noContent().build();
