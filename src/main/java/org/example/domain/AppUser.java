@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Data
 @Table(name="app_user")
@@ -40,8 +37,5 @@ public class AppUser {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    private Set<AppUserRole> appUserRole = new HashSet<AppUserRole>(0);
 
 }

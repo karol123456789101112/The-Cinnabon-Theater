@@ -41,6 +41,7 @@ export default function ReservationPage() {
             <div>
                 Data: {vm.reservationInfo?.date}<br />
                 Tytuł filmu: {vm.reservationInfo?.movieTitle}<br />
+                Gatunki: {vm.reservationInfo?.genres?.join(", ")}<br />
                 Czas trwania filmu: {vm.reservationInfo?.duration} minut<br />
                 Godzina rozpoczęcia: {vm.reservationInfo?.startTime}<br />
                 Numer sali: {vm.reservationInfo?.roomNumber}<br />

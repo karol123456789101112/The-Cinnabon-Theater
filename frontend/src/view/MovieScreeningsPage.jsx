@@ -13,6 +13,9 @@ export default function MovieScreeningsPage() {
                     {day.movies.map(movie => (
                         <div key={movie.movieId} style={{ marginLeft: "20px" }}>
                             <h3>{movie.title}</h3>
+                            <div>
+                                Gatunki: {movie.genres?.join(", ")}
+                            </div>
                             <h3>Length: {movie.duration} minutes</h3>
                             <div>
                                 {movie.screenings.map(screening => {

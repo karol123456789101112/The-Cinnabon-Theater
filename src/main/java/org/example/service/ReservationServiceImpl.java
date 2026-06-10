@@ -21,13 +21,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     public ReservationScreeningDto getReservationInfo(long id){
-        System.out.println("SERVICE");
 
         MovieScreening movieScreening = movieScreeningRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("MovieScreening not found: " + id));
 
         List<SeatDto> seats = new ArrayList<>();
-
         List<Long> reservedSeatsIds = new ArrayList<>();
 
         for(Ticket ticket : movieScreening.getTickets()){
@@ -50,6 +48,12 @@ public class ReservationServiceImpl implements ReservationService {
             seats.add(seatDto);
         }
 
+        List<String> genres = movieScreening.getMovie()
+                .getGenres()
+                .stream()
+                .map(g -> g.getName())
+                .toList();
+
         ReservationScreeningDto dto = new ReservationScreeningDto(
                 movieScreening.getStartTime().toLocalDate(),
                 movieScreening.getMovie().getName(),
@@ -57,6 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
                 movieScreening.getStartTime().toLocalTime(),
                 movieScreening.getScreeningRoom().getRoomNumber(),
                 movieScreening.getPrice(),
+                genres,
                 List.copyOf(seats)
         );
 

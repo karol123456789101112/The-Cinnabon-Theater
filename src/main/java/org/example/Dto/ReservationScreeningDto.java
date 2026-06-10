@@ -12,5 +12,6 @@ public record ReservationScreeningDto(
         LocalTime startTime,
         long roomNumber,
         BigDecimal price,
+        List<String> genres,
         List<SeatDto> seats
 ){}

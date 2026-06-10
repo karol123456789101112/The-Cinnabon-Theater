@@ -17,7 +17,7 @@ function AppContent() {
   return (
       <Routes>
           <Route path="/payment" element={isAuthenticated ?
-                   <RegisterPage />
+                   <PaymentPage />
                  : <Navigate to="/login" />
             }
           />

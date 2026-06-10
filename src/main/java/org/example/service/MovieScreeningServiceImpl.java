@@ -22,7 +22,8 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
     @Override
     public List<ScreeningByDateDto> getMovieScreenings() {
 
-        List<MovieScreening> screenings = movieScreeningRepository.findAll();
+        List<MovieScreening> screenings =
+                movieScreeningRepository.findAllWithMoviesAndGenres();
 
         Map<LocalDate, Map<Long, MovieGroupDto>> grouped = new HashMap<>();
 
@@ -44,6 +45,11 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
                             movie.getId(),
                             movie.getName(),
                             movie.getDuration(),
+                            movie.getGenres()
+                                    .stream()
+                                    .map(g -> g.getName())
+                                    .distinct()
+                                    .toList(),
                             new ArrayList<>()
                     )
             );
