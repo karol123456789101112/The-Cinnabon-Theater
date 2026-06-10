@@ -16,16 +16,15 @@ function AppContent() {
 
   return (
       <Routes>
-          <Route path="/register" element={isAuthenticated ?
+          <Route path="/payment" element={isAuthenticated ?
                    <RegisterPage />
-                 : <Navigate to="/" />
+                 : <Navigate to="/login" />
             }
           />
-
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<MovieScreeningsPage />} />
           <Route path="/screenings/:id" element={<ReservationPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
           <Route path="*" element={<MovieScreeningsPage />} />
       </Routes>
   );

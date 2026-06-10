@@ -1,7 +1,7 @@
 package org.example.service;
 
 import org.example.Dto.AppUserDto;
-import org.example.domain.AppUserRole;
+import org.example.domain.Role;
 import org.example.domain.VerificationToken;
 import org.example.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.domain.AppUser;
 import org.example.repository.AppUserRepository;
-import org.example.repository.AppUserRoleRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,19 +25,16 @@ public class AppUserServiceImpl implements AppUserService{
     private static final Logger log = LoggerFactory.getLogger(AppUserService.class);
 
     private AppUserRepository appUserRepository;
-    private AppUserRoleRepository appUserRoleRepository;
     private PasswordEncoder passwordEncoder;
     private VerificationTokenRepository verificationTokenRepository;
     private EmailService emailService;
 
     @Autowired
     public AppUserServiceImpl(AppUserRepository appUserRepository,
-                              AppUserRoleRepository appUserRoleRepository,
                               PasswordEncoder passwordEncoder,
                               VerificationTokenRepository verificationTokenRepository,
                               EmailService emailService) {
         this.appUserRepository = appUserRepository;
-        this.appUserRoleRepository = appUserRoleRepository;
         this.passwordEncoder = passwordEncoder;
         this.verificationTokenRepository = verificationTokenRepository;
         this.emailService = emailService;
@@ -82,8 +78,7 @@ public class AppUserServiceImpl implements AppUserService{
 
         user.setPassword(passwordEncoder.encode(dto.password()));
 
-        AppUserRole role = appUserRoleRepository.findByRole("ROLE_USER");
-        user.getAppUserRole().add(role);
+        user.setRole(Role.ROLE_USER);
 
         user.setEnabled(false);
 
@@ -105,12 +100,12 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
 
-    @Transactional
-    public void editAppUser(AppUser appUser) {
-        appUser.getAppUserRole().add(appUserRoleRepository.findByRole("ROLE_USER"));
-        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        appUserRepository.save(appUser);
-    }
+//    @Transactional
+//    public void editAppUser(AppUser appUser) {
+//        appUser.getAppUserRole().add(appUserRoleRepository.findByRole("ROLE_USER"));
+//        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+//        appUserRepository.save(appUser);
+//    }
 
     @Transactional
     public List<AppUser> listAppUser() {
