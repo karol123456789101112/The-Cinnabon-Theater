@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -25,6 +26,12 @@ public class Ticket {
     @NotNull
     private boolean reserved;
 
+    @NotNull
+    private LocalDateTime createdAt;
+
+    @NotNull
+    private BigDecimal price;
+
     @ManyToOne
     @JoinColumn(name = "movie_screening_id")
     private MovieScreening movieScreening;
@@ -32,4 +39,8 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "seat_id")
     private Seat seat;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private AppUser user;
 }
