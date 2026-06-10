@@ -1,20 +1,28 @@
-import { useState, useEffect } from "react";
-import { getReservationInfo } from "../model/reservationApi";
+import { useState } from "react";
+import { handlePayment } from "../model/paymentApi";
 
-export function usePaymentViewModel(movieScreeningId) {
+export function usePaymentViewModel() {
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
-    const [reservationInfo, setReservationInfo] = useState(null);
+    const pay = async ({ seatId, movieScreeningId }) => {
+        setLoading(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await getReservationInfo(movieScreeningId);
-            setReservationInfo(data);
-        };
-
-        fetchData();
-    }, [movieScreeningId]);
+        try {
+            await handlePayment({ seatId, movieScreeningId });
+            setSuccess(true);
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return {
-        reservationInfo
+        loading,
+        success,
+        pay
     };
 }
