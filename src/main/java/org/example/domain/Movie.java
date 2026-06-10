@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.time.Duration;
 import java.util.List;
 
 @Entity
@@ -26,4 +24,12 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<MovieScreening> movieScreenings;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private List<Genre> genres;
 }
