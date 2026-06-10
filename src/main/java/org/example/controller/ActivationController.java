@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.domain.AppUser;
+import org.example.domain.UserStatus;
 import org.example.domain.VerificationToken;
 import org.example.repository.AppUserRepository;
 import org.example.repository.VerificationTokenRepository;
@@ -30,7 +31,7 @@ public class ActivationController {
         }
 
         AppUser user = vt.getUser();
-        user.setEnabled(true);
+        user.setStatus(UserStatus.ACTIVE);
 
         userRepo.save(user);
         tokenRepo.delete(vt);

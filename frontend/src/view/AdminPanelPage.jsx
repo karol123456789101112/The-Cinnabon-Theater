@@ -8,7 +8,9 @@ export default function AdminPanelPage() {
         <div>
             {vm.allUsers?.map((user) => (
                 <div key={user.id}>
-                    {user.id} {user.email} {user.firstName} {user.lastName} <br />
+                    {user.id} {user.email} {user.firstName} {user.lastName} {user.role} <br />
+                    <button onClick={() => vm.handleDeleteUser(user.id)}>Usuń użytkownika</button>
+                    <button onClick={() => vm.handleToggleRole(user.id)}>Zmień role</button>
                 </div>
             ))}
         </div>

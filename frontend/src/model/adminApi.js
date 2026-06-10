@@ -9,3 +9,29 @@ export const getAllUsers = async () => {
 
     return data;
 };
+
+export const deleteUser = async (id) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/api/users/deleteUser/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}`},
+    });
+
+    if (!response.ok){
+        throw new Error("Failed to delete user");
+    }
+};
+
+export const toggleAdmin = async (id) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/api/users/toggleAdmin/${id}`,{
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`},
+    });
+
+    if (!response.ok){
+        throw new Error("Failed to toggle user role")
+    }else{
+        return await response.json();
+    }
+};

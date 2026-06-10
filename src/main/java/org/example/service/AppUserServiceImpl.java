@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.Dto.AppUserDto;
 import org.example.Dto.AppUserViewDto;
 import org.example.domain.Role;
+import org.example.domain.UserStatus;
 import org.example.domain.VerificationToken;
 import org.example.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class AppUserServiceImpl implements AppUserService{
 
         user.setRole(Role.ROLE_USER);
 
-        user.setEnabled(false);
+        user.setStatus(UserStatus.INACTIVE);
 
         return user;
     }
@@ -112,7 +113,7 @@ public class AppUserServiceImpl implements AppUserService{
     @Transactional
     public List<AppUserViewDto> listAllAppUsers() {
 
-        List<AppUser> allAppUsers = appUserRepository.findAll();
+        List<AppUser> allAppUsers = appUserRepository.findByStatus(UserStatus.ACTIVE);
         List<AppUserViewDto> allAppUsersDto = new ArrayList<>();
 
         for(AppUser appUser : allAppUsers){
@@ -131,17 +132,21 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     @Transactional
-    public void removeAppUser(long id) {
-        appUserRepository.deleteById(id);
+    public void deleteUser(long id) {
+        AppUser appUser = appUserRepository.findById(id);
+        appUser.setStatus(UserStatus.DELETED);
     }
 
-    @Transactional
-    public AppUser getAppUser(long id) {
-        return appUserRepository.findById(id);
-    }
+    public AppUser toggleAdminRole(long id){
+        AppUser user = appUserRepository.findById(id);
 
-    public Optional<AppUser> findByEmail(String email) {
-        return appUserRepository.findByEmail(email);
+        if(user.getRole() == Role.ROLE_ADMIN){
+            user.setRole(Role.ROLE_USER);
+        } else{
+            user.setRole(Role.ROLE_ADMIN);
+        }
+
+        return appUserRepository.save(user);
     }
 
 }

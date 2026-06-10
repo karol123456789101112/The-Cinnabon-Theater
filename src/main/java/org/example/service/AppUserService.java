@@ -9,20 +9,20 @@ import org.example.domain.AppUser;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
+
 public interface AppUserService {
 
     void addAppUser(AppUserDto appUserDto);
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN') OR (#appUser.login == principal.username)")
+//    @PreAuthorize("hasRole('ADMIN') || #userId == authentication.principal.id")
 //    void editAppUser(@Param("appUser") AppUser appUser);
 
+
     List<AppUserViewDto> listAllAppUsers();
+    void deleteUser(long id);
 
-    @Secured("ROLE_ADMIN")
-    void removeAppUser (long id);
+    AppUser toggleAdminRole(long id);
 
-    AppUser getAppUser(long id);
-
-    Optional<AppUser> findByEmail(String email);
 }
 

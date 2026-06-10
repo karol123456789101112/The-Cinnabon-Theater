@@ -2,6 +2,7 @@ package org.example.service;
 
 import jakarta.transaction.Transactional;
 import org.example.domain.AppUser;
+import org.example.domain.UserStatus;
 import org.example.domain.VerificationToken;
 import org.example.repository.AppUserRepository;
 import org.example.repository.VerificationTokenRepository;
@@ -36,7 +37,7 @@ public class CleanupService {
 
             AppUser user = token.getUser();
 
-            if (!user.isEnabled()) {
+            if (user.getStatus() == UserStatus.INACTIVE) {
                 userRepository.delete(user);
             }
 
