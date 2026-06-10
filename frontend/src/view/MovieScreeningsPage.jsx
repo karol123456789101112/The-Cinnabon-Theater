@@ -15,19 +15,28 @@ export default function MovieScreeningsPage() {
                             <h3>{movie.title}</h3>
                             <h3>Length: {movie.duration} minutes</h3>
                             <div>
-                                {movie.screenings.map(screening => (
-                                    <Link
-                                        key={screening.id}
-                                        to={`/screenings/${screening.id}`}
-                                        style={{
-                                            marginRight: "10px",
-                                            textDecoration: "none",
-                                            color: "blue"
-                                        }}
-                                    >
-                                        {screening.time.slice(0, 5)}
-                                    </Link>
-                                ))}
+                                {movie.screenings.map(screening => {
+                                    const sameTimeCount = movie.screenings.filter(
+                                        s => s.time === screening.time
+                                    ).length;
+
+                                    return (
+                                        <Link
+                                            key={screening.screeningId}
+                                            to={`/screenings/${screening.screeningId}`}
+                                            style={{
+                                                marginRight: "10px",
+                                                textDecoration: "none",
+                                                color: "blue"
+                                            }}
+                                        >
+                                            {screening.time.slice(0, 5)}
+
+                                            {sameTimeCount > 1 &&
+                                                ` (Sala ${screening.roomNumber})`}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </div>
                     ))}

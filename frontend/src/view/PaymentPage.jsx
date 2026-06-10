@@ -1,6 +1,7 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import {useLocation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {usePaymentViewModel} from "../viewmodel/usePaymentViewModel";
+import {useScreeningReservationViewModel} from "../viewmodel/useScreeningReservationViewModel";
 
 export default function PaymentPage() {
     const location = useLocation();
@@ -8,55 +9,30 @@ export default function PaymentPage() {
 
     const { seat, movieScreeningId } = location.state || {};
 
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
-
-    const vm = usePaymentViewModel(movieScreeningId);
+    const vm = usePaymentViewModel();
+    const resVM = useScreeningReservationViewModel(movieScreeningId)
 
     if (!seat || !movieScreeningId) {
         return (
             <div>
                 <h2>Błąd</h2>
-                <p>Brak danych do płatności</p>
                 <button onClick={() => navigate(-1)}>Wróć</button>
             </div>
         );
     }
 
-    const handlePayment = async () => {
-        setLoading(true);
+    const onPay = async () => {
+        const ok = await vm.pay({
+            seatId: seat.id,
+            movieScreeningId
+        });
 
-        try {
-            const response = await fetch("http://localhost:8081/tickets/addTicket", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    seatId: seat.id,
-                    movieScreeningId,
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error("Payment failed " + seat.id + "  " + movieScreeningId);
-            }
-
-            setSuccess(true);
-
-            setTimeout(() => {
-                navigate("/");
-            }, 2000);
-
-        } catch (err) {
-            console.error(err);
-            alert("Błąd płatności");
-        } finally {
-            setLoading(false);
+        if (ok) {
+            setTimeout(() => navigate("/"), 2000);
         }
     };
 
-    if (success) {
+    if (vm.success) {
         return (
             <div>
                 <h2>Płatność zakończona</h2>
@@ -69,16 +45,16 @@ export default function PaymentPage() {
         <div>
             <h2>Płatność</h2>
 
-            Data: {vm.reservationInfo?.date}<br />
-            Tytuł filmu: {vm.reservationInfo?.movieTitle}<br />
-            Czas trwania: {vm.reservationInfo?.duration} minut<br />
-            Godzina rozpoczęcia: {vm.reservationInfo?.startTime}<br />
-            Numer sali: {vm.reservationInfo?.roomNumber}<br />
-            Miejsce: {seat.number} {seat.row}<br />
-            Cena: {vm.reservationInfo?.price} zł<br /><br />
+            Data: {resVM.reservationInfo?.date}<br />
+            Tytuł filmu: {resVM.reservationInfo?.movieTitle}<br />
+            Czas trwania filmu: {resVM.reservationInfo?.duration} minut<br />
+            Godzina rozpoczęcia: {resVM.reservationInfo?.startTime}<br />
+            Numer sali: {resVM.reservationInfo?.roomNumber}<br />
+            Miejsce: {seat.number} {seat.row} <br />
+            Cena: {resVM.reservationInfo?.price} zł<br /><br />
 
-            <button onClick={handlePayment} disabled={loading}>
-                {loading ? "Przetwarzanie..." : "Zapłać"}
+            <button onClick={onPay} disabled={vm.loading}>
+                {vm.loading ? "Przetwarzanie..." : "Zapłać"}
             </button>
         </div>
     );

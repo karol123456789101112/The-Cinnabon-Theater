@@ -15,7 +15,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class MovieScreeningServiceImpl implements MovieScreeningService{
+public class MovieScreeningServiceImpl implements MovieScreeningService {
 
     private final MovieScreeningRepository movieScreeningRepository;
 
@@ -33,54 +33,50 @@ public class MovieScreeningServiceImpl implements MovieScreeningService{
 
             Movie movie = ms.getMovie();
 
-            // sprawdź czy istnieje mapa dla daty
-            if (!grouped.containsKey(date)) {
-                grouped.put(date, new HashMap<>());
-            }
-
+            // data
+            grouped.putIfAbsent(date, new HashMap<>());
             Map<Long, MovieGroupDto> moviesByDate = grouped.get(date);
 
-            // sprawdź czy istnieje film
-            if (!moviesByDate.containsKey(movie.getId())) {
-
-                MovieGroupDto dto = new MovieGroupDto(
-                        movie.getId(),
-                        movie.getName(),
-                        movie.getDuration(),
-                        new ArrayList<>()
-                );
-
-                moviesByDate.put(movie.getId(), dto);
-            }
-
-            ScreeningTimeDto dto = new ScreeningTimeDto(
-                    ms.getId(),
-                    time
+            // film
+            moviesByDate.putIfAbsent(
+                    movie.getId(),
+                    new MovieGroupDto(
+                            movie.getId(),
+                            movie.getName(),
+                            movie.getDuration(),
+                            new ArrayList<>()
+                    )
             );
 
-            // dodaj godzinę
-            moviesByDate
-                    .get(movie.getId())
-                    .screenings()
-                    .add(dto);
+            MovieGroupDto movieDto = moviesByDate.get(movie.getId());
+            movieDto.screenings().add(
+                    new ScreeningTimeDto(
+                            ms.getId(),
+                            time,
+                            ms.getScreeningRoom().getRoomNumber()
+                    )
+            );
         }
 
-        // sortowanie godzin seansów
+        // sortowanie
         for (Map<Long, MovieGroupDto> moviesByDate : grouped.values()) {
             for (MovieGroupDto movieDto : moviesByDate.values()) {
-                movieDto.screenings().sort(Comparator.comparing(ScreeningTimeDto::time));
+
+                movieDto.screenings().sort(
+                        Comparator.comparing(ScreeningTimeDto::time)
+                );
             }
         }
 
-        return grouped.entrySet().stream()
+        return grouped.entrySet()
+                .stream()
                 .sorted(Map.Entry.comparingByKey())
-                .map(dateEntry -> {
-                    ScreeningByDateDto dto = new ScreeningByDateDto(
-                            dateEntry.getKey(),
-                            new ArrayList<>(dateEntry.getValue().values())
-                    );
-                    return dto;
-                })
+                .map(dateEntry ->
+                        new ScreeningByDateDto(
+                                dateEntry.getKey(),
+                                new ArrayList<>(dateEntry.getValue().values())
+                        )
+                )
                 .toList();
     }
 }
