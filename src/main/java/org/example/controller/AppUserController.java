@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.Dto.AppUserDto;
+import org.example.Dto.AppUserViewDto;
 import org.example.service.AppUserService;
 import org.example.service.ReCaptchaService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,11 +31,8 @@ public class AppUserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AppUserDto dto) {
 
-        System.out.println("COS");
-
         if (!reCaptchaService.verify(dto.recaptchaToken())) {
 
-            System.out.println("NOT WORKING");
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("Invalid reCAPTCHA");
@@ -41,6 +41,11 @@ public class AppUserController {
         appUserService.addAppUser(dto);
 
         return ResponseEntity.ok("User created");
+    }
+
+    @GetMapping("/listAllUsers")
+    public List<AppUserViewDto> listAllUsers(){
+        return appUserService.listAllAppUsers();
     }
 }
 

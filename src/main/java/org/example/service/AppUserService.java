@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.Dto.AppUserDto;
+import org.example.Dto.AppUserViewDto;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +16,7 @@ public interface AppUserService {
 //    @PreAuthorize("hasRole('ROLE_ADMIN') OR (#appUser.login == principal.username)")
 //    void editAppUser(@Param("appUser") AppUser appUser);
 
-    List<AppUser> listAppUser();
+    List<AppUserViewDto> listAllAppUsers();
 
     @Secured("ROLE_ADMIN")
     void removeAppUser (long id);

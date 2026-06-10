@@ -7,6 +7,7 @@ import { Navigate } from 'react-router-dom';
 import MovieScreeningsPage from "./view/MovieScreeningsPage";
 import ReservationPage from "./view/ReservationPage";
 import PaymentPage from "./view/PaymentPage";
+import AdminPanelPage from "./view/AdminPanelPage";
 
 function AppContent() {
 
@@ -25,6 +26,7 @@ function AppContent() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<MovieScreeningsPage />} />
           <Route path="/screenings/:id" element={<ReservationPage />} />
+          <Route path="/adminPanel" element={<AdminPanelPage />} />
           <Route path="*" element={<MovieScreeningsPage />} />
       </Routes>
   );

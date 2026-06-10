@@ -1,4 +1,4 @@
-export async function addUser(userDto, recaptchaToken) {
+export const addUser = async (userDto, recaptchaToken) => {
     const res = await fetch("http://localhost:8081/api/users/register", {
         method: "POST",
         headers: {
@@ -10,11 +10,11 @@ export async function addUser(userDto, recaptchaToken) {
         })
     });
 
-    const text = await res.text();
+    const data = await res.text();
 
     if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${text}`);
+        throw new Error(`HTTP ${res.status}: ${data}`);
     }
 
-    return text;
-}
+    return data;
+};

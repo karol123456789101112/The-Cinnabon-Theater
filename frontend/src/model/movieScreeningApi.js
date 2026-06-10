@@ -1,10 +1,5 @@
-export const getMovieScreenings = async (email, password) => {
-    const response = await fetch("http://localhost:8081/movieScreenings", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        },
-    });
+export const getMovieScreenings = async () => {
+    const response = await fetch("http://localhost:8081/movieScreenings");
 
     const data = await response.json();
 

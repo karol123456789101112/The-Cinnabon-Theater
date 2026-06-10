@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.Dto.AppUserDto;
+import org.example.Dto.AppUserViewDto;
 import org.example.domain.Role;
 import org.example.domain.VerificationToken;
 import org.example.repository.VerificationTokenRepository;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -108,8 +110,24 @@ public class AppUserServiceImpl implements AppUserService{
 //    }
 
     @Transactional
-    public List<AppUser> listAppUser() {
-        return appUserRepository.findAll();
+    public List<AppUserViewDto> listAllAppUsers() {
+
+        List<AppUser> allAppUsers = appUserRepository.findAll();
+        List<AppUserViewDto> allAppUsersDto = new ArrayList<>();
+
+        for(AppUser appUser : allAppUsers){
+            AppUserViewDto dto = new AppUserViewDto(
+                    appUser.getId(),
+                    appUser.getFirstName(),
+                    appUser.getLastName(),
+                    appUser.getEmail(),
+                    appUser.getRole()
+            );
+
+            allAppUsersDto.add(dto);
+        }
+
+        return allAppUsersDto;
     }
 
     @Transactional
