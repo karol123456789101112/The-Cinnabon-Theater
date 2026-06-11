@@ -22,6 +22,9 @@ public class Movie {
     @NotNull
     private long duration;
 
+    @NotNull
+    private boolean active;
+
     @OneToMany(mappedBy = "movie")
     private List<MovieScreening> movieScreenings;
 

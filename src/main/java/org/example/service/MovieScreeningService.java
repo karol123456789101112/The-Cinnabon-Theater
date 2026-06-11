@@ -8,4 +8,5 @@ import java.util.List;
 public interface MovieScreeningService {
     List<ScreeningByDateDto> getMovieScreenings();
     List<MovieScreeningViewDto> getAllMovieScreenings();
+    void deleteMovieScreening(long id);
 }

@@ -57,3 +57,59 @@ export const getAllMovies = async () => {
 
     return movies;
 }
+
+export const deleteMovie = async (id) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/movies/delete/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}`},
+    });
+
+    if(!response.ok){
+        throw new Error("Failed to delete movie");
+    }
+}
+
+export const deleteMovieScreening = async (id) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/movieScreenings/delete/${id}`, {
+        method: "DELETE",
+        headers: { 'Authorization': `Bearer ${token}`},
+    });
+
+    if(!response.ok) {
+        throw new Error("Failed to delete movie screening");
+    }
+}
+
+export const getAllGenres = async () => {
+    const response = await fetch("http://localhost:8081/genres");
+
+    const allGenres = response.json();
+
+    if(!response) {
+        throw allGenres;
+    } else{
+        return allGenres;
+    }
+}
+
+export const addMovie = async (form) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch("http://localhost:8081/movies/addMovie", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            name: form.name,
+            duration: form.duration,
+            genreIds: form.genreIds
+        })
+    });
+
+    if (!response.ok) {
+       throw new Error("Failed to add movie");
+    }
+}

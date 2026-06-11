@@ -9,6 +9,7 @@ import org.example.domain.Movie;
 import org.example.domain.MovieScreening;
 import org.example.repository.MovieScreeningRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -93,9 +94,17 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
         List<MovieScreeningViewDto> dto = new ArrayList<>();
 
         for(MovieScreening movieScreening : allMovieScreenings){
-            dto.add(new MovieScreeningViewDto(movieScreening.getId(), movieScreening.getStartTime()));
+            if (movieScreening.isActive()) {
+                dto.add(new MovieScreeningViewDto(movieScreening.getId(), movieScreening.getStartTime()));
+            }
         }
 
         return dto;
+    }
+
+    @Transactional
+    public void deleteMovieScreening(long id) {
+        MovieScreening movieScreening = movieScreeningRepository.findById(id).orElseThrow();
+        movieScreening.setActive(false);
     }
 }
