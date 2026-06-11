@@ -1,4 +1,5 @@
 import {useAdminViewModel} from "../viewmodel/useAdminViewModel";
+import {Link} from "react-router-dom";
 
 export default function AdminPanelPage() {
 
@@ -61,12 +62,12 @@ export default function AdminPanelPage() {
             <input
                 placeholder="Name of the movie"
                 value={vm.addMovieForm.name}
-                onChange={e => vm.updateField("name", e.target.value)}
+                onChange={e => vm.updateAddMovieField("name", e.target.value)}
             />
             <input
                 placeholder="Duration of the movie"
                 value={vm.addMovieForm.duration}
-                onChange={e => vm.updateField("duration", e.target.value)}
+                onChange={e => vm.updateAddMovieField("duration", e.target.value)}
             />
             <select
                 multiple
@@ -77,7 +78,7 @@ export default function AdminPanelPage() {
                         option => Number(option.value)
                     );
 
-                    vm.updateField("genreIds", values);
+                    vm.updateAddMovieField("genreIds", values);
                 }}
             >
                 {vm.allGenres.map(g => (
@@ -88,7 +89,7 @@ export default function AdminPanelPage() {
             </select>
 
             <button
-                onClick={() => vm.submitAddMovieForm()}
+                onClick={() => vm.submitMovieForm()}
             >
                 Add movie
             </button>
@@ -96,7 +97,58 @@ export default function AdminPanelPage() {
             {vm.allMovies.map((movie) => (
                 <div key={movie.id}>
                     {movie.id} {movie.name} {movie.duration}
-                    <button onClick={() => vm.handleDeleteMovie(movie.id)}>Usuń</button>
+
+                    <button onClick={() => vm.handleDeleteMovie(movie.id)}>
+                        Usuń
+                    </button>
+
+                    <button onClick={() => vm.startEditing(movie)}>
+                        Edytuj
+                    </button>
+
+                    {vm.editingMovieId === movie.id && (
+                        <div>
+                            <input
+                                value={vm.editMovieForm.name}
+                                onChange={e => vm.updateEditMovieField("name", e.target.value)}
+                            />
+
+                            <input
+                                value={vm.editMovieForm.duration}
+                                onChange={e => vm.updateEditMovieField("duration", e.target.value)}
+                            />
+
+                            <select
+                                multiple
+                                value={vm.editMovieForm.genreIds}
+                                onChange={(e) => {
+                                    const values = Array.from(
+                                        e.target.selectedOptions,
+                                        option => Number(option.value)
+                                    );
+
+                                    vm.updateEditMovieField("genreIds", values);
+                                }}
+
+                            >
+
+                            {vm.allGenres.map(g => (
+                                <option key={g.id} value={g.id}>
+                                    {g.name}
+                                </option>
+                            ))}
+
+                            </select>
+
+                            <button onClick={vm.submitMovieForm}>
+                                Zapisz
+                            </button>
+
+                            <button onClick={vm.cancelEditing}>
+                                Anuluj
+                            </button>
+                        </div>
+                    )}
                 </div>
             ))}
         </div>

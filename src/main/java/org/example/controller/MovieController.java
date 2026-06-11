@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.Dto.CreateMovieDto;
 import org.example.Dto.MovieResponseDto;
 import org.example.Dto.MovieViewDto;
+import org.example.Dto.UpdateMovieDto;
 import org.example.service.MovieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,11 @@ public class MovieController {
     @PostMapping("/addMovie")
     public ResponseEntity<MovieResponseDto> addMovie(@RequestBody CreateMovieDto createMovieDto) {
         return ResponseEntity.ok(movieService.addMovie(createMovieDto));
+    }
+
+    @PutMapping("/editMovie/{id}")
+    public ResponseEntity<MovieResponseDto> editMovie(@PathVariable("id") long id,
+                                                      @RequestBody UpdateMovieDto updateMovieDto) {
+        return ResponseEntity.ok(movieService.editMovie(id, updateMovieDto));
     }
 }

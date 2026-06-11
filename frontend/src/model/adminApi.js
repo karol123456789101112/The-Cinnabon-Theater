@@ -150,3 +150,25 @@ export const getAllScreeningRooms = async () => {
 
     return screeningRooms;
 }
+
+export const updateMovie = async (id, form) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/movies/editMovie/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            name: form.name,
+            duration: form.duration,
+            genreIds: form.genreIds
+        })
+    })
+
+    if(!response.ok) {
+        throw new Error("Failed to edit movie");
+    }
+
+    return response.json();
+}

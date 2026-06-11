@@ -5,7 +5,7 @@ import {
     getAllMovies,
     getAllMovieScreenings, getAllScreeningRooms,
     getAllUsers,
-    toggleAdmin
+    toggleAdmin, updateMovie
 } from "../model/adminApi";
 import {useEffect, useState} from "react";
 
@@ -16,11 +16,15 @@ export function useAdminViewModel(){
     const [allMovies, setAllMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
     const [allScreeningRooms, setAllScreeningRooms] = useState([]);
-    const [addMovieForm, setAddMovieForm] = useState({
+    const emptyMovieForm = {
         name: "",
         duration: "",
         genreIds: []
-    });
+    };
+    const [addMovieForm, setAddMovieForm] = useState(emptyMovieForm);
+    const [editMovieForm, setEditMovieForm] = useState(emptyMovieForm);
+    const [editingMovieId, setEditingMovieId] = useState(null);
+
     const [addMovieScreeningForm, setAddMovieScreeningForm] = useState({
         price: "",
         startTime: "",
@@ -101,8 +105,15 @@ export function useAdminViewModel(){
         }
     }
 
-    function updateField(field, value) {
-        setAddMovieForm( prev => ({
+    function updateAddMovieField(field, value) {
+        setAddMovieForm(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    }
+
+    function updateEditMovieField(field, value) {
+        setEditMovieForm(prev => ({
             ...prev,
             [field]: value
         }));
@@ -126,14 +137,30 @@ export function useAdminViewModel(){
         }
     }
 
-    const submitAddMovieForm = async () => {
+    async function submitMovieForm() {
         try {
-            const newMovie = await addMovie(addMovieForm)
-            setAllMovies(prev => [...prev, newMovie]);
+            if (editingMovieId) {
+                const updated = await updateMovie(editingMovieId, editMovieForm);
+
+                setAllMovies(prev =>
+                    prev.map(m =>
+                        m.id === updated.id ? updated : m
+                    )
+                );
+
+                setEditingMovieId(null);
+                setEditMovieForm(emptyMovieForm);
+
+            } else {
+                const newMovie = await addMovie(addMovieForm);
+
+                setAllMovies(prev => [...prev, newMovie]);
+
+                setAddMovieForm(emptyMovieForm);
+            }
+
         } catch (err) {
-            console.error("Error while adding movie " + err);
-        } finally {
-            setLoading(false);
+            console.error(err);
         }
     }
 
@@ -157,6 +184,21 @@ export function useAdminViewModel(){
         }
     }
 
+    function startEditing(movie) {
+        setEditingMovieId(movie.id);
+
+        setEditMovieForm({
+            name: movie.name,
+            duration: movie.duration,
+            genreIds: movie.genres.map(g => g.id)
+        });
+    }
+
+    function cancelEditing() {
+        setEditingMovieId(null);
+        setEditMovieForm(emptyMovieForm);
+    }
+
     useEffect(() => {
         fetchUsers();
         fetchMovieScreenings();
@@ -170,9 +212,11 @@ export function useAdminViewModel(){
         allMovieScreenings,
         allMovies,
         addMovieForm,
+        editMovieForm,
         addMovieScreeningForm,
         allGenres,
         allScreeningRooms,
+        editingMovieId,
         error,
         loading,
         fetchUsers,
@@ -182,10 +226,13 @@ export function useAdminViewModel(){
         fetchMovies,
         handleDeleteMovie,
         handleDeleteMovieScreening,
-        updateField,
         fetchGenres,
-        submitAddMovieForm,
+        submitMovieForm,
         submitAddMovieScreeningForm,
-        updateMovieScreeningField
+        updateMovieScreeningField,
+        startEditing,
+        cancelEditing,
+        updateEditMovieField,
+        updateAddMovieField
     }
 }
