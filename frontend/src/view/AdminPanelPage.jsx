@@ -13,6 +13,45 @@ export default function AdminPanelPage() {
                     <button onClick={() => vm.handleToggleRole(user.id)}>Zmień role</button>
                 </div>
             ))}
+            <input
+                placeholder="Price"
+                value={vm.addMovieScreeningForm.price}
+                onChange={e => vm.updateMovieScreeningField("price", e.target.value)}
+            />
+            <input
+                placeholder="Start time"
+                value={vm.addMovieScreeningForm.startTime}
+                onChange={e => vm.updateMovieScreeningField("startTime", e.target.value)}
+            />
+            <select
+                value={vm.addMovieScreeningForm.movieId}
+                onChange={(e) => {
+                    vm.updateMovieScreeningField("movieId", Number(e.target.value));
+                }}
+            >
+                {vm.allMovies.map(m => (
+                    <option key={m.id} value={m.id}>
+                        {m.name}
+                    </option>
+                ))}
+            </select>
+            <select
+                value={vm.addMovieScreeningForm.screeningRoomId}
+                onChange={(e) => {
+                    vm.updateMovieScreeningField("screeningRoomId", Number(e.target.value));
+                }}
+            >
+                {vm.allScreeningRooms.map(sr => (
+                    <option key={sr.id} value={sr.id}>
+                        {sr.roomNumber}
+                    </option>
+                ))}
+            </select>
+            <button
+                onClick={() => vm.submitAddMovieScreeningForm()}
+            >
+            Add movie screening
+            </button>
             {vm.allMovieScreenings.map((screening) => (
                 <div key={screening.id}>
                     {screening.id} {screening.startTime.replace("T", " ")}

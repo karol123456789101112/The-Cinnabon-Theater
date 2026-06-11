@@ -1,8 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.Dto.MovieScreeningViewDto;
-import org.example.Dto.ScreeningByDateDto;
+import org.example.Dto.*;
 import org.example.service.MovieScreeningService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +27,10 @@ public class MovieScreeningController {
     public ResponseEntity<Void> deleteMovieScreening(@PathVariable("id") long id) {
         movieScreeningService.deleteMovieScreening(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<MovieScreeningResponseDto> addMovieScreening(@RequestBody CreateMovieScreeningDto dto) {
+        return ResponseEntity.ok(movieScreeningService.addMovieScreening(dto));
     }
 }

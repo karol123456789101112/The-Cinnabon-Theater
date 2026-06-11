@@ -112,4 +112,41 @@ export const addMovie = async (form) => {
     if (!response.ok) {
        throw new Error("Failed to add movie");
     }
+
+    return await response.json();
+}
+
+export const addMovieScreening = async (form) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch("http://localhost:8081/movieScreenings/add", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            price: form.price,
+            startTime: form.startTime,
+            movieId: form.movieId,
+            screeningRoomId: form.screeningRoomId
+        })
+    })
+
+    if(!response.ok) {
+        throw new Error("Failed to add movie screening");
+    }
+
+    return await response.json();
+}
+
+export const getAllScreeningRooms = async () => {
+    const response = await fetch("http://localhost:8081/screeningRooms");
+
+    const screeningRooms = response.json();
+
+    if(!response) {
+        throw screeningRooms;
+    }
+
+    return screeningRooms;
 }

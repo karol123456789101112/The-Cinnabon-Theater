@@ -1,9 +1,9 @@
 import {
-    addMovie,
+    addMovie, addMovieScreening,
     deleteMovie, deleteMovieScreening,
     deleteUser, getAllGenres,
     getAllMovies,
-    getAllMovieScreenings,
+    getAllMovieScreenings, getAllScreeningRooms,
     getAllUsers,
     toggleAdmin
 } from "../model/adminApi";
@@ -15,11 +15,18 @@ export function useAdminViewModel(){
     const [allMovieScreenings, setAllMovieScreenings] = useState([])
     const [allMovies, setAllMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
+    const [allScreeningRooms, setAllScreeningRooms] = useState([]);
     const [addMovieForm, setAddMovieForm] = useState({
         name: "",
         duration: "",
         genreIds: []
     });
+    const [addMovieScreeningForm, setAddMovieScreeningForm] = useState({
+        price: "",
+        startTime: "",
+        movieId: "",
+        screeningRoomId: ""
+    })
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true);
 
@@ -101,6 +108,13 @@ export function useAdminViewModel(){
         }));
     }
 
+    function updateMovieScreeningField(field, value) {
+        setAddMovieScreeningForm( prev => ({
+            ...prev,
+            [field]: value
+        }));
+    }
+
     const fetchGenres = async () => {
         try {
             const genres = await getAllGenres();
@@ -114,7 +128,8 @@ export function useAdminViewModel(){
 
     const submitAddMovieForm = async () => {
         try {
-            await addMovie(addMovieForm)
+            const newMovie = await addMovie(addMovieForm)
+            setAllMovies(prev => [...prev, newMovie]);
         } catch (err) {
             console.error("Error while adding movie " + err);
         } finally {
@@ -122,12 +137,32 @@ export function useAdminViewModel(){
         }
     }
 
+    const submitAddMovieScreeningForm = async () => {
+        try {
+            const newMovieScreening = await addMovieScreening(addMovieScreeningForm);
+            setAllMovieScreenings(prev => [...prev, newMovieScreening]);
+        } catch (err) {
+            console.error("Error while adding movie screening " + err)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const fetchScreeningRooms = async () => {
+        try {
+            const screeningRooms = await getAllScreeningRooms();
+            setAllScreeningRooms(screeningRooms);
+        } catch (err) {
+            console.error("Error while fetching screening rooms " + err);
+        }
+    }
 
     useEffect(() => {
         fetchUsers();
         fetchMovieScreenings();
         fetchMovies();
         fetchGenres();
+        fetchScreeningRooms()
     }, []);
 
     return {
@@ -135,7 +170,9 @@ export function useAdminViewModel(){
         allMovieScreenings,
         allMovies,
         addMovieForm,
+        addMovieScreeningForm,
         allGenres,
+        allScreeningRooms,
         error,
         loading,
         fetchUsers,
@@ -147,6 +184,8 @@ export function useAdminViewModel(){
         handleDeleteMovieScreening,
         updateField,
         fetchGenres,
-        submitAddMovieForm
+        submitAddMovieForm,
+        submitAddMovieScreeningForm,
+        updateMovieScreeningField
     }
 }

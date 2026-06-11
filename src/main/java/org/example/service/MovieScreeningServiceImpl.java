@@ -1,13 +1,13 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.Dto.MovieGroupDto;
-import org.example.Dto.MovieScreeningViewDto;
-import org.example.Dto.ScreeningByDateDto;
-import org.example.Dto.ScreeningTimeDto;
+import org.example.Dto.*;
 import org.example.domain.Movie;
 import org.example.domain.MovieScreening;
+import org.example.domain.ScreeningRoom;
+import org.example.repository.MovieRepository;
 import org.example.repository.MovieScreeningRepository;
+import org.example.repository.ScreeningRoomRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +20,8 @@ import java.util.*;
 public class MovieScreeningServiceImpl implements MovieScreeningService {
 
     private final MovieScreeningRepository movieScreeningRepository;
+    private final MovieRepository movieRepository;
+    private final ScreeningRoomRepository screeningRoomRepository;
 
     @Override
     public List<ScreeningByDateDto> getMovieScreenings() {
@@ -106,5 +108,33 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
     public void deleteMovieScreening(long id) {
         MovieScreening movieScreening = movieScreeningRepository.findById(id).orElseThrow();
         movieScreening.setActive(false);
+    }
+
+    public MovieScreeningResponseDto addMovieScreening(CreateMovieScreeningDto dto) {
+
+        Movie movie = movieRepository.findById(dto.movieId()).orElseThrow();
+        ScreeningRoom screeningRoom = screeningRoomRepository.findById(dto.screeningRoomId()).orElseThrow();
+
+        MovieScreening movieScreening = new MovieScreening();
+
+        movieScreening.setActive(true);
+        movieScreening.setPrice(dto.price());
+        movieScreening.setStartTime(dto.startTime());
+        movieScreening.setMovie(movie);
+        movieScreening.setScreeningRoom(screeningRoom);
+
+        MovieScreening saved = movieScreeningRepository.save(movieScreening);
+
+        MovieSummaryDto mdto = new MovieSummaryDto(saved.getMovie().getId(), saved.getMovie().getName());
+        ScreeningRoomDto sdto = new ScreeningRoomDto(saved.getScreeningRoom().getId(),
+                saved.getScreeningRoom().getRoomNumber());
+
+        return new MovieScreeningResponseDto(
+                saved.getId(),
+                saved.getPrice(),
+                saved.getStartTime(),
+                mdto,
+                sdto
+        );
     }
 }
