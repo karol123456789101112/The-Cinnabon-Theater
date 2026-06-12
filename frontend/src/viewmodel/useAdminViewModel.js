@@ -5,7 +5,7 @@ import {
     getAllMovies,
     getAllMovieScreenings, getAllScreeningRooms,
     getAllUsers,
-    toggleAdmin, updateMovie
+    toggleAdmin, updateMovie, updateMovieScreening
 } from "../model/adminApi";
 import {useEffect, useState} from "react";
 
@@ -25,12 +25,22 @@ export function useAdminViewModel(){
     const [editMovieForm, setEditMovieForm] = useState(emptyMovieForm);
     const [editingMovieId, setEditingMovieId] = useState(null);
 
-    const [addMovieScreeningForm, setAddMovieScreeningForm] = useState({
+    const emptyMovieScreeningForm = {
         price: "",
         startTime: "",
         movieId: "",
         screeningRoomId: ""
-    })
+    };
+
+    const [addMovieScreeningForm, setAddMovieScreeningForm] =
+        useState(emptyMovieScreeningForm);
+
+    const [editMovieScreeningForm, setEditMovieScreeningForm] =
+        useState(emptyMovieScreeningForm);
+
+    const [editingMovieScreeningId, setEditingMovieScreeningId] =
+        useState(null);
+
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true);
 
@@ -119,13 +129,6 @@ export function useAdminViewModel(){
         }));
     }
 
-    function updateMovieScreeningField(field, value) {
-        setAddMovieScreeningForm( prev => ({
-            ...prev,
-            [field]: value
-        }));
-    }
-
     const fetchGenres = async () => {
         try {
             const genres = await getAllGenres();
@@ -199,6 +202,68 @@ export function useAdminViewModel(){
         setEditMovieForm(emptyMovieForm);
     }
 
+    function updateAddMovieScreeningField(field, value) {
+        setAddMovieScreeningForm(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    }
+
+    function updateEditMovieScreeningField(field, value) {
+        setEditMovieScreeningForm(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    }
+
+    function startEditingMovieScreening(screening) {
+        console.log(screening);
+        setEditingMovieScreeningId(screening.id);
+
+        setEditMovieScreeningForm({
+            price: screening.price,
+            startTime: screening.startTime,
+            movieId: screening.movieId,
+            screeningRoomId: screening.screeningRoomId
+        });
+    }
+
+    function cancelEditingMovieScreening() {
+        setEditingMovieScreeningId(null);
+        setEditMovieScreeningForm(emptyMovieScreeningForm);
+    }
+
+    async function submitMovieScreeningForm() {
+        try {
+            if (editingMovieScreeningId) {
+                const updated = await updateMovieScreening(
+                    editingMovieScreeningId,
+                    editMovieScreeningForm
+                );
+
+                setAllMovieScreenings(prev =>
+                    prev.map(ms =>
+                        ms.id === updated.id ? updated : ms
+                    )
+                );
+
+                setEditingMovieScreeningId(null);
+                setEditMovieScreeningForm(emptyMovieScreeningForm);
+
+            } else {
+                const created = await addMovieScreening(
+                    addMovieScreeningForm
+                );
+
+                setAllMovieScreenings(prev => [...prev, created]);
+
+                setAddMovieScreeningForm(emptyMovieScreeningForm);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     useEffect(() => {
         fetchUsers();
         fetchMovieScreenings();
@@ -217,6 +282,8 @@ export function useAdminViewModel(){
         allGenres,
         allScreeningRooms,
         editingMovieId,
+        editingMovieScreeningId,
+        editMovieScreeningForm,
         error,
         loading,
         fetchUsers,
@@ -229,10 +296,14 @@ export function useAdminViewModel(){
         fetchGenres,
         submitMovieForm,
         submitAddMovieScreeningForm,
-        updateMovieScreeningField,
         startEditing,
         cancelEditing,
         updateEditMovieField,
-        updateAddMovieField
+        updateAddMovieField,
+        startEditingMovieScreening,
+        updateEditMovieScreeningField,
+        submitMovieScreeningForm,
+        cancelEditingMovieScreening,
+        updateAddMovieScreeningField
     }
 }

@@ -172,3 +172,26 @@ export const updateMovie = async (id, form) => {
 
     return response.json();
 }
+
+export const updateMovieScreening = async (id, form) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/movieScreenings/editMovieScreening/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            price: form.price,
+            startTime: form.startTime,
+            movieId: form.movieId,
+            screeningRoomId: form.screeningRoomId
+        })
+    })
+
+    if(!response.ok) {
+        throw new Error("Failed to edit movie screening");
+    }
+
+    return response.json();
+}

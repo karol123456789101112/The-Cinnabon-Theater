@@ -97,7 +97,13 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
 
         for(MovieScreening movieScreening : allMovieScreenings){
             if (movieScreening.isActive()) {
-                dto.add(new MovieScreeningViewDto(movieScreening.getId(), movieScreening.getStartTime()));
+                dto.add(new MovieScreeningViewDto(
+                            movieScreening.getId(),
+                            movieScreening.getPrice(),
+                            movieScreening.getStartTime(),
+                            movieScreening.getMovie().getId(),
+                            movieScreening.getScreeningRoom().getId()
+                        ));
             }
         }
 
@@ -116,6 +122,33 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
         ScreeningRoom screeningRoom = screeningRoomRepository.findById(dto.screeningRoomId()).orElseThrow();
 
         MovieScreening movieScreening = new MovieScreening();
+
+        movieScreening.setActive(true);
+        movieScreening.setPrice(dto.price());
+        movieScreening.setStartTime(dto.startTime());
+        movieScreening.setMovie(movie);
+        movieScreening.setScreeningRoom(screeningRoom);
+
+        MovieScreening saved = movieScreeningRepository.save(movieScreening);
+
+        MovieSummaryDto mdto = new MovieSummaryDto(saved.getMovie().getId(), saved.getMovie().getName());
+        ScreeningRoomDto sdto = new ScreeningRoomDto(saved.getScreeningRoom().getId(),
+                saved.getScreeningRoom().getRoomNumber());
+
+        return new MovieScreeningResponseDto(
+                saved.getId(),
+                saved.getPrice(),
+                saved.getStartTime(),
+                mdto,
+                sdto
+        );
+    }
+
+    public MovieScreeningResponseDto editMovieScreening(long id, UpdateMovieScreeningDto dto) {
+        Movie movie = movieRepository.findById(dto.movieId()).orElseThrow();
+        ScreeningRoom screeningRoom = screeningRoomRepository.findById(dto.screeningRoomId()).orElseThrow();
+
+        MovieScreening movieScreening = movieScreeningRepository.findById(id).orElseThrow();
 
         movieScreening.setActive(true);
         movieScreening.setPrice(dto.price());

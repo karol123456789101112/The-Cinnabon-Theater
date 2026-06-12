@@ -33,4 +33,9 @@ public class MovieScreeningController {
     public ResponseEntity<MovieScreeningResponseDto> addMovieScreening(@RequestBody CreateMovieScreeningDto dto) {
         return ResponseEntity.ok(movieScreeningService.addMovieScreening(dto));
     }
+
+    @PutMapping("/editMovieScreening/{id}")
+    public ResponseEntity<MovieScreeningResponseDto> addMovieScreening(@PathVariable("id") long id, @RequestBody UpdateMovieScreeningDto dto) {
+        return ResponseEntity.ok(movieScreeningService.editMovieScreening(id, dto));
+    }
 }

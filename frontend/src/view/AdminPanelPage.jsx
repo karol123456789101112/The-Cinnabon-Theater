@@ -17,17 +17,17 @@ export default function AdminPanelPage() {
             <input
                 placeholder="Price"
                 value={vm.addMovieScreeningForm.price}
-                onChange={e => vm.updateMovieScreeningField("price", e.target.value)}
+                onChange={e => vm.updateAddMovieScreeningField("price", e.target.value)}
             />
             <input
                 placeholder="Start time"
                 value={vm.addMovieScreeningForm.startTime}
-                onChange={e => vm.updateMovieScreeningField("startTime", e.target.value)}
+                onChange={e => vm.updateAddMovieScreeningField("startTime", e.target.value)}
             />
             <select
                 value={vm.addMovieScreeningForm.movieId}
                 onChange={(e) => {
-                    vm.updateMovieScreeningField("movieId", Number(e.target.value));
+                    vm.updateAddMovieScreeningField("movieId", Number(e.target.value));
                 }}
             >
                 {vm.allMovies.map(m => (
@@ -39,7 +39,7 @@ export default function AdminPanelPage() {
             <select
                 value={vm.addMovieScreeningForm.screeningRoomId}
                 onChange={(e) => {
-                    vm.updateMovieScreeningField("screeningRoomId", Number(e.target.value));
+                    vm.updateAddMovieScreeningField("screeningRoomId", Number(e.target.value));
                 }}
             >
                 {vm.allScreeningRooms.map(sr => (
@@ -56,7 +56,78 @@ export default function AdminPanelPage() {
             {vm.allMovieScreenings.map((screening) => (
                 <div key={screening.id}>
                     {screening.id} {screening.startTime.replace("T", " ")}
-                    <button onClick={() => vm.handleDeleteMovieScreening(screening.id)}>Usuń</button>
+
+                    <button onClick={() => vm.handleDeleteMovieScreening(screening.id)}>
+                        Usuń
+                    </button>
+
+                    <button onClick={() => vm.startEditingMovieScreening(screening)}>
+                        Edytuj
+                    </button>
+
+                    {vm.editingMovieScreeningId === screening.id && (
+                        <div>
+                            <input
+                                value={vm.editMovieScreeningForm.price}
+                                onChange={e =>
+                                    vm.updateEditMovieScreeningField(
+                                        "price",
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                            <input
+                                value={vm.editMovieScreeningForm.startTime}
+                                onChange={e =>
+                                    vm.updateEditMovieScreeningField(
+                                        "startTime",
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                            <select
+                                value={vm.editMovieScreeningForm.movieId}
+                                onChange={e =>
+                                    vm.updateEditMovieScreeningField(
+                                        "movieId",
+                                        Number(e.target.value)
+                                    )
+                                }
+                            >
+                                {vm.allMovies.map(m => (
+                                    <option key={m.id} value={m.id}>
+                                        {m.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <select
+                                value={vm.editMovieScreeningForm.screeningRoomId}
+                                onChange={e =>
+                                    vm.updateEditMovieScreeningField(
+                                        "screeningRoomId",
+                                        Number(e.target.value)
+                                    )
+                                }
+                            >
+                                {vm.allScreeningRooms.map(sr => (
+                                    <option key={sr.id} value={sr.id}>
+                                        {sr.roomNumber}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <button onClick={vm.submitMovieScreeningForm}>
+                                Zapisz
+                            </button>
+
+                            <button onClick={vm.cancelEditingMovieScreening}>
+                                Anuluj
+                            </button>
+                        </div>
+                    )}
                 </div>
             ))}
             <input
