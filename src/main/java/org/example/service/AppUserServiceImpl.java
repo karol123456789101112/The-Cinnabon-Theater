@@ -1,7 +1,9 @@
 package org.example.service;
 
 import org.example.Dto.AppUserDto;
+import org.example.Dto.AppUserViewDto;
 import org.example.domain.Role;
+import org.example.domain.UserStatus;
 import org.example.domain.VerificationToken;
 import org.example.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.example.domain.AppUser;
 import org.example.repository.AppUserRepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class AppUserServiceImpl implements AppUserService{
-
-    private static final Logger log = LoggerFactory.getLogger(AppUserService.class);
 
     private AppUserRepository appUserRepository;
     private PasswordEncoder passwordEncoder;
@@ -80,7 +77,7 @@ public class AppUserServiceImpl implements AppUserService{
 
         user.setRole(Role.ROLE_USER);
 
-        user.setEnabled(false);
+        user.setStatus(UserStatus.INACTIVE);
 
         return user;
     }
@@ -99,31 +96,43 @@ public class AppUserServiceImpl implements AppUserService{
         return token;
     }
 
-
-//    @Transactional
-//    public void editAppUser(AppUser appUser) {
-//        appUser.getAppUserRole().add(appUserRoleRepository.findByRole("ROLE_USER"));
-//        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-//        appUserRepository.save(appUser);
-//    }
-
     @Transactional
-    public List<AppUser> listAppUser() {
-        return appUserRepository.findAll();
+    public List<AppUserViewDto> listAllAppUsers() {
+
+        List<AppUser> allAppUsers = appUserRepository.findByStatusOrderByIdAsc(UserStatus.ACTIVE);
+        List<AppUserViewDto> allAppUsersDto = new ArrayList<>();
+
+        for(AppUser appUser : allAppUsers){
+            AppUserViewDto dto = new AppUserViewDto(
+                    appUser.getId(),
+                    appUser.getFirstName(),
+                    appUser.getLastName(),
+                    appUser.getEmail(),
+                    appUser.getRole()
+            );
+
+            allAppUsersDto.add(dto);
+        }
+
+        return allAppUsersDto;
     }
 
     @Transactional
-    public void removeAppUser(long id) {
-        appUserRepository.deleteById(id);
+    public void deleteUser(long id) {
+        AppUser appUser = appUserRepository.findById(id);
+        appUser.setStatus(UserStatus.DELETED);
     }
 
-    @Transactional
-    public AppUser getAppUser(long id) {
-        return appUserRepository.findById(id);
-    }
+    public AppUser toggleAdminRole(long id){
+        AppUser user = appUserRepository.findById(id);
 
-    public Optional<AppUser> findByEmail(String email) {
-        return appUserRepository.findByEmail(email);
+        if(user.getRole() == Role.ROLE_ADMIN){
+            user.setRole(Role.ROLE_USER);
+        } else{
+            user.setRole(Role.ROLE_ADMIN);
+        }
+
+        return appUserRepository.save(user);
     }
 
 }

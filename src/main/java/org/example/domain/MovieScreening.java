@@ -25,6 +25,9 @@ public class MovieScreening {
     @NotNull
     private BigDecimal price;
 
+    @NotNull
+    private boolean active;
+
     @ManyToOne
     @JoinColumn(name = "screening_room_id")
     private ScreeningRoom screeningRoom;

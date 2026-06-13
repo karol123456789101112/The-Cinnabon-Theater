@@ -36,7 +36,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/tickets/addTicket").hasRole("USER")
+                        .requestMatchers("/api/users/listAllUsers", "/api/users/deleteUser/{id}",
+                                "/api/users/toggleAdmin/{id}", "/movies/delete/{id}",
+                                "/movieScreenings/delete/{id}", "/movies/addMovie",
+                                "/movieScreenings/add", "/movies/editMovie/{id}",
+                                "/movieScreenings/editMovieScreening/{id}", "/tickets/getAllTickets",
+                                "/tickets/cancel/{id}").hasRole("ADMIN")
+                        .requestMatchers("/tickets/addTicket").authenticated()
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())

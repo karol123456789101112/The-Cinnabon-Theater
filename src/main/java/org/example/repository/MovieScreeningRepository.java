@@ -11,6 +11,8 @@ public interface MovieScreeningRepository extends JpaRepository<MovieScreening, 
         SELECT DISTINCT ms FROM MovieScreening ms
         JOIN FETCH ms.movie m
         LEFT JOIN FETCH m.genres
+        WHERE ms.active = true
     """)
     List<MovieScreening> findAllWithMoviesAndGenres();
+    List<MovieScreening> findByActiveTrueOrderByStartTimeAsc();
 }

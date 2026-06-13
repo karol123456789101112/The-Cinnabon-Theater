@@ -7,6 +7,7 @@ import { Navigate } from 'react-router-dom';
 import MovieScreeningsPage from "./view/MovieScreeningsPage";
 import ReservationPage from "./view/ReservationPage";
 import PaymentPage from "./view/PaymentPage";
+import AdminPanelPage from "./view/AdminPanelPage";
 
 function AppContent() {
 
@@ -16,6 +17,13 @@ function AppContent() {
 
   return (
       <Routes>
+
+          <Route path="/adminPanel" element={ isAuthenticated && userRole === 'ROLE_ADMIN' ?
+                <AdminPanelPage />
+              : <Navigate to={"/"} />
+            }
+          />
+
           <Route path="/payment" element={isAuthenticated ?
                    <PaymentPage />
                  : <Navigate to="/login" />
@@ -25,6 +33,7 @@ function AppContent() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<MovieScreeningsPage />} />
           <Route path="/screenings/:id" element={<ReservationPage />} />
+          <Route path="/adminPanel" element={<AdminPanelPage />} />
           <Route path="*" element={<MovieScreeningsPage />} />
       </Routes>
   );

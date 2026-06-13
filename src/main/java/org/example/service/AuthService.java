@@ -8,6 +8,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static org.example.domain.UserStatus.DELETED;
+import static org.example.domain.UserStatus.INACTIVE;
+
 @Service
 public class AuthService {
 
@@ -28,8 +31,11 @@ public class AuthService {
                 .orElseThrow(() ->
                         new BadCredentialsException("badCredentials"));
 
-        if (!user.isEnabled()) {
+        if (user.getStatus() == INACTIVE) {
             throw new InactiveUserException("User is not active");
+        }
+        else if (user.getStatus() == DELETED) {
+            throw new InactiveUserException("User is deleted");
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {

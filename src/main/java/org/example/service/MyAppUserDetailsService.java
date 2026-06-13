@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.domain.Role;
+import org.example.domain.UserStatus;
 import org.example.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,7 +35,7 @@ public class MyAppUserDetailsService implements UserDetailsService {
 
     // Converts AppUser user to org.springframework.security.core.userdetails.User
     private User buildUserForAuthentication(org.example.domain.AppUser appUser, List<GrantedAuthority> authorities) {
-        return new User(appUser.getEmail(), appUser.getPassword(), appUser.isEnabled(),
+        return new User(appUser.getEmail(), appUser.getPassword(), appUser.getStatus() == UserStatus.ACTIVE,
                 true, true, true, authorities);
     }
 

@@ -3,17 +3,18 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import org.example.Dto.CreateTicketDto;
 import org.example.Dto.TicketResponseDto;
-import org.example.domain.AppUser;
-import org.example.domain.MovieScreening;
-import org.example.domain.Seat;
-import org.example.domain.Ticket;
+import org.example.domain.*;
 import org.example.repository.AppUserRepository;
 import org.example.repository.MovieScreeningRepository;
 import org.example.repository.SeatRepository;
 import org.example.repository.TicketRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,27 @@ public class TicketServiceImpl implements TicketService{
                 saved.getId(),
                 saved.getPrice(),
                 saved.getMovieScreening().getId(),
-                saved.getSeat().getId()
+                saved.getSeat().getId(),
+                saved.getUser().getId()
         );
+    }
+
+    public List<TicketResponseDto> getAllActiveTickets() {
+        return ticketRepository.findByReservedTrueOrderByIdAsc()
+                .stream()
+                .map(t -> new TicketResponseDto(
+                        t.getId(),
+                        t.getPrice(),
+                        t.getSeat().getId(),
+                        t.getMovieScreening().getId(),
+                        t.getUser().getId()
+                ))
+                .toList();
+    }
+
+    @Transactional
+    public void cancelTicket(long id) {
+        Ticket ticket = ticketRepository.findById(id).orElseThrow();
+        ticket.setReserved(false);
     }
 }

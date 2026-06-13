@@ -17,8 +17,6 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ReservationScreeningDto getReservationInfo(@PathVariable("id") long id){
-
-        System.out.println("CONTROLLER");
         return reservationService.getReservationInfo(id);
     }
 }
