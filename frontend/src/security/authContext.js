@@ -9,7 +9,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [userRoles, setUserRoles] = useState([]);
+    const [userRole, setUserRole] = useState(null);
     const [userId, setUserId] = useState(null);
     const [firstName, setFirstName] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -23,11 +23,11 @@ export const AuthProvider = ({ children }) => {
             if (decodedToken.exp < currentTime) {
                 localStorage.removeItem('token');
                 setIsAuthenticated(false);
-                setUserRoles([]);
+                setUserRole(null);
                 setFirstName(null);
             } else {
                 setIsAuthenticated(true);
-                setUserRoles(decodedToken.roles || []);
+                setUserRole(decodedToken.role || null);
                 setUserId(decodedToken.userId);
                 setFirstName(decodedToken.firstName);
             }
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', token);
         const decodedToken = jwtDecode(token);
         setIsAuthenticated(true);
-        setUserRoles(decodedToken.roles || []);
+        setUserRole(decodedToken.role || null);
         setUserId(decodedToken.userId);
         setFirstName(decodedToken.firstName);
     };
@@ -47,13 +47,13 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         setIsAuthenticated(false);
-        setUserRoles([]);
+        setUserRole(null);
         setUserId(null);
         setFirstName(null);
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, userRoles, firstName, userId, login, logout, loading }}>
+        <AuthContext.Provider value={{ isAuthenticated, userRole, firstName, userId, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

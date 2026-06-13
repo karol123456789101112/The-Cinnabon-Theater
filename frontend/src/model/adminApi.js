@@ -1,5 +1,12 @@
 export const getAllUsers = async () => {
-    const response = await fetch("http://localhost:8081/api/users/listAllUsers");
+    const token = localStorage.getItem('token');
+    const response = await fetch("http://localhost:8081/api/users/listAllUsers", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
 
     const data = await response.json();
 
@@ -194,4 +201,36 @@ export const updateMovieScreening = async (id, form) => {
     }
 
     return response.json();
+}
+
+export const getAllActiveTickets = async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch("http://localhost:8081/tickets/getAllTickets", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    if(!response.ok) {
+        throw new Error("Failed to fetch tickets");
+    }
+
+    return response.json();
+}
+
+export const cancelTicket = async (id) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8081/tickets/cancel/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    if(!response.ok) {
+        throw new Error("Failed to cancel ticket");
+    }
 }

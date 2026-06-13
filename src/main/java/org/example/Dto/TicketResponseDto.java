@@ -6,5 +6,6 @@ public record TicketResponseDto(
         long id,
         BigDecimal price,
         long seatId,
-        long movieScreeningId
+        long movieScreeningId,
+        long userId
 ) {}

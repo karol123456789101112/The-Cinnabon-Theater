@@ -17,6 +17,13 @@ function AppContent() {
 
   return (
       <Routes>
+
+          <Route path="/adminPanel" element={ isAuthenticated && userRole === 'ROLE_ADMIN' ?
+                <AdminPanelPage />
+              : <Navigate to={"/"} />
+            }
+          />
+
           <Route path="/payment" element={isAuthenticated ?
                    <PaymentPage />
                  : <Navigate to="/login" />

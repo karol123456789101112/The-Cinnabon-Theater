@@ -14,4 +14,5 @@ public interface MovieScreeningRepository extends JpaRepository<MovieScreening, 
         WHERE ms.active = true
     """)
     List<MovieScreening> findAllWithMoviesAndGenres();
+    List<MovieScreening> findByActiveTrueOrderByStartTimeAsc();
 }

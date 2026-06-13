@@ -1,7 +1,7 @@
 import {
-    addMovie, addMovieScreening,
+    addMovie, addMovieScreening, cancelTicket,
     deleteMovie, deleteMovieScreening,
-    deleteUser, getAllGenres,
+    deleteUser, getAllActiveTickets, getAllGenres,
     getAllMovies,
     getAllMovieScreenings, getAllScreeningRooms,
     getAllUsers,
@@ -15,6 +15,7 @@ export function useAdminViewModel(){
     const [allMovieScreenings, setAllMovieScreenings] = useState([])
     const [allMovies, setAllMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
+    const [allTickets, setAllTickets] = useState([]);
     const [allScreeningRooms, setAllScreeningRooms] = useState([]);
     const emptyMovieForm = {
         name: "",
@@ -264,12 +265,33 @@ export function useAdminViewModel(){
         }
     }
 
+    const fetchTickets = async () => {
+        try {
+            const tickets = await getAllActiveTickets();
+            setAllTickets(tickets);
+        } catch (err) {
+            console.error("Failed to fetch tickets " + err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleCancelTicket = async (id) => {
+        try {
+            await cancelTicket(id);
+            setAllTickets(prev => prev.filter(t => t.id !== id));
+        } catch (err) {
+            console.error("Failed to cancel ticket " + err);
+        }
+    }
+
     useEffect(() => {
         fetchUsers();
         fetchMovieScreenings();
         fetchMovies();
         fetchGenres();
-        fetchScreeningRooms()
+        fetchScreeningRooms();
+        fetchTickets();
     }, []);
 
     return {
@@ -284,6 +306,7 @@ export function useAdminViewModel(){
         editingMovieId,
         editingMovieScreeningId,
         editMovieScreeningForm,
+        allTickets,
         error,
         loading,
         fetchUsers,
@@ -304,6 +327,7 @@ export function useAdminViewModel(){
         updateEditMovieScreeningField,
         submitMovieScreeningForm,
         cancelEditingMovieScreening,
-        updateAddMovieScreeningField
+        updateAddMovieScreeningField,
+        handleCancelTicket
     }
 }

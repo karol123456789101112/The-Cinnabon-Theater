@@ -222,6 +222,16 @@ export default function AdminPanelPage() {
                     )}
                 </div>
             ))}
+            {vm.allTickets.map((ticket) => (
+                <div key={ticket.id}>
+                    {ticket.id} {ticket.price} {ticket.userId}
+                    <button
+                        onClick={() => vm.handleCancelTicket(ticket.id)}
+                    >
+                        Cancel ticket
+                    </button>
+                </div>
+            ))}
         </div>
     );
 }

@@ -13,19 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.example.domain.AppUser;
 import org.example.repository.AppUserRepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class AppUserServiceImpl implements AppUserService{
-
-    private static final Logger log = LoggerFactory.getLogger(AppUserService.class);
 
     private AppUserRepository appUserRepository;
     private PasswordEncoder passwordEncoder;
@@ -102,18 +96,10 @@ public class AppUserServiceImpl implements AppUserService{
         return token;
     }
 
-
-//    @Transactional
-//    public void editAppUser(AppUser appUser) {
-//        appUser.getAppUserRole().add(appUserRoleRepository.findByRole("ROLE_USER"));
-//        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-//        appUserRepository.save(appUser);
-//    }
-
     @Transactional
     public List<AppUserViewDto> listAllAppUsers() {
 
-        List<AppUser> allAppUsers = appUserRepository.findByStatus(UserStatus.ACTIVE);
+        List<AppUser> allAppUsers = appUserRepository.findByStatusOrderByIdAsc(UserStatus.ACTIVE);
         List<AppUserViewDto> allAppUsersDto = new ArrayList<>();
 
         for(AppUser appUser : allAppUsers){

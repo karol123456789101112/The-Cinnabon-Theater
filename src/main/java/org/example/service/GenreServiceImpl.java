@@ -16,7 +16,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     public List<GenreDto> getAllGenres() {
-        List<GenreDto> allGenres =  genreRepository.findAll()
+        List<GenreDto> allGenres =  genreRepository.findAllByOrderByNameAsc()
                 .stream()
                 .map(g -> new GenreDto(g.getId(), g.getName()))
                 .toList();

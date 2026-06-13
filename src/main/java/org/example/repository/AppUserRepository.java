@@ -15,6 +15,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     AppUser findById(long id);
     Optional<AppUser> findByEmail(String email);
     List<AppUser> findByStatus(UserStatus status);
-
+    List<AppUser> findByStatusOrderByIdAsc(UserStatus status);
 }
 

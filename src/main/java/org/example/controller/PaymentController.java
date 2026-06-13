@@ -6,10 +6,9 @@ import org.example.Dto.TicketResponseDto;
 import org.example.domain.Ticket;
 import org.example.service.TicketService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,5 +20,17 @@ public class PaymentController {
     @PostMapping("/addTicket")
     public ResponseEntity<TicketResponseDto> addTicket(@RequestBody CreateTicketDto createTicketDto) {
         return ResponseEntity.ok(ticketService.addTicket(createTicketDto));
+    }
+
+    @GetMapping("/getAllTickets")
+    public List<TicketResponseDto> getAllActiveTickets() {
+        return ticketService.getAllActiveTickets();
+    }
+
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<Void> cancelTicket(@PathVariable("id") long id) {
+        ticketService.cancelTicket(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

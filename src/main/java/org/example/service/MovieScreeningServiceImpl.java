@@ -90,24 +90,20 @@ public class MovieScreeningServiceImpl implements MovieScreeningService {
                 .toList();
     }
 
-    public List<MovieScreeningViewDto> getAllMovieScreenings(){
-        List<MovieScreening> allMovieScreenings = movieScreeningRepository.findAll();
+    public List<MovieScreeningViewDto> getAllMovieScreenings() {
 
-        List<MovieScreeningViewDto> dto = new ArrayList<>();
+        List<MovieScreening> allMovieScreenings =
+                movieScreeningRepository.findByActiveTrueOrderByStartTimeAsc();
 
-        for(MovieScreening movieScreening : allMovieScreenings){
-            if (movieScreening.isActive()) {
-                dto.add(new MovieScreeningViewDto(
-                            movieScreening.getId(),
-                            movieScreening.getPrice(),
-                            movieScreening.getStartTime(),
-                            movieScreening.getMovie().getId(),
-                            movieScreening.getScreeningRoom().getId()
-                        ));
-            }
-        }
-
-        return dto;
+        return allMovieScreenings.stream()
+                .map(movieScreening -> new MovieScreeningViewDto(
+                        movieScreening.getId(),
+                        movieScreening.getPrice(),
+                        movieScreening.getStartTime(),
+                        movieScreening.getMovie().getId(),
+                        movieScreening.getScreeningRoom().getId()
+                ))
+                .toList();
     }
 
     @Transactional
