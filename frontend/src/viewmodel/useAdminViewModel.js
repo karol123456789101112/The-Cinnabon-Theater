@@ -218,7 +218,6 @@ export function useAdminViewModel(){
     }
 
     function startEditingMovieScreening(screening) {
-        console.log(screening);
         setEditingMovieScreeningId(screening.id);
 
         setEditMovieScreeningForm({

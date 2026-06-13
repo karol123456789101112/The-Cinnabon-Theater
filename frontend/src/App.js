@@ -8,6 +8,7 @@ import MovieScreeningsPage from "./view/MovieScreeningsPage";
 import ReservationPage from "./view/ReservationPage";
 import PaymentPage from "./view/PaymentPage";
 import AdminPanelPage from "./view/AdminPanelPage";
+import UserPanelPage from "./view/UserPanelPage";
 
 function AppContent() {
 
@@ -29,6 +30,13 @@ function AppContent() {
                  : <Navigate to="/login" />
             }
           />
+
+          <Route path="/userPanel" element={isAuthenticated ?
+              <UserPanelPage />
+              : <Navigate to="/login" />
+          }
+          />
+
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<MovieScreeningsPage />} />

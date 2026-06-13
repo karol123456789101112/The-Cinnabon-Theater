@@ -1,12 +1,15 @@
 package org.example.service;
 
 import org.example.Dto.AppUserDto;
+import org.example.Dto.AppUserResponseDto;
 import org.example.Dto.AppUserViewDto;
+import org.example.Dto.UpdateAppUserDto;
 import org.example.domain.Role;
 import org.example.domain.UserStatus;
 import org.example.domain.VerificationToken;
 import org.example.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,6 +136,46 @@ public class AppUserServiceImpl implements AppUserService{
         }
 
         return appUserRepository.save(user);
+    }
+
+    public AppUserResponseDto editUser(String email, UpdateAppUserDto dto) {
+
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setEmail(dto.email());
+        user.setTelephone(dto.telephone());
+
+        if (dto.password() != null && !dto.password().isBlank()) {
+            if (!dto.password().equals(dto.confirmPassword())) {
+                throw new IllegalArgumentException("Passwords do not match");
+            }
+
+            user.setPassword(passwordEncoder.encode(dto.password()));
+        }
+
+        AppUser saved = appUserRepository.save(user);
+
+        return new AppUserResponseDto(
+                saved.getId(),
+                saved.getEmail(),
+                saved.getFirstName(),
+                saved.getLastName(),
+                saved.getTelephone()
+        );
+    }
+
+    public AppUserResponseDto getUser(String email) {
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+
+        return new AppUserResponseDto(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getTelephone()
+        );
     }
 
 }

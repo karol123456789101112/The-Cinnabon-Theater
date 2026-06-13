@@ -1,12 +1,15 @@
 package org.example.controller;
 
 import org.example.Dto.AppUserDto;
+import org.example.Dto.AppUserResponseDto;
 import org.example.Dto.AppUserViewDto;
+import org.example.Dto.UpdateAppUserDto;
 import org.example.domain.AppUser;
 import org.example.service.AppUserService;
 import org.example.service.ReCaptchaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +64,18 @@ public class AppUserController {
     @PutMapping("/toggleAdmin/{id}")
     public AppUser toggleAdmin(@PathVariable("id") long id){
         return appUserService.toggleAdminRole(id);
+    }
+
+    @PutMapping("/edit/me")
+    public ResponseEntity<AppUserResponseDto> editMyUser(@RequestBody UpdateAppUserDto dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(appUserService.editUser(email, dto));
+    }
+
+    @GetMapping("/me")
+    public AppUserResponseDto getMyUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return appUserService.getUser(email);
     }
 }
 
