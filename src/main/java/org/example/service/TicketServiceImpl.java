@@ -3,6 +3,7 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import org.example.Dto.CreateTicketDto;
 import org.example.Dto.TicketResponseDto;
+import org.example.Dto.TicketUserResponseDto;
 import org.example.domain.*;
 import org.example.repository.AppUserRepository;
 import org.example.repository.MovieScreeningRepository;
@@ -72,5 +73,26 @@ public class TicketServiceImpl implements TicketService{
     public void cancelTicket(long id) {
         Ticket ticket = ticketRepository.findById(id).orElseThrow();
         ticket.setReserved(false);
+    }
+
+    public List<TicketUserResponseDto> getAllUserTickets(String email) {
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+
+        return ticketRepository.findByUserIdOrderByMovieScreeningStartTimeDesc(user.getId())
+                .stream()
+                .map(t -> new TicketUserResponseDto(
+                        t.getId(),
+                        t.getCreatedAt(),
+                        t.getPrice(),
+                        t.getMovieScreening().getStartTime(),
+                        t.getMovieScreening().getMovie().getName(),
+                        t.getSeat().getNumber(),
+                        t.getSeat().getRow(),
+                        t.getMovieScreening().getScreeningRoom().getRoomNumber(),
+                        t.getMovieScreening().getMovie().getDuration(),
+                        t.isReserved(),
+                        user.getEmail()
+                ))
+                .toList();
     }
 }

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import {getUser, addUser, editUser} from "../model/userApi";
+import {useEffect, useState} from "react";
+import {getUser, addUser, editUser, getAllUserTickets} from "../model/userApi";
 
 export function useAppUserViewModel() {
     const [form, setForm] = useState({
@@ -12,6 +12,7 @@ export function useAppUserViewModel() {
     });
     const [showEditForm, setShowEditForm] = useState(false);
     const [originalUser, setOriginalUser] = useState(null);
+    const [allTickets, setAllTickets] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -96,10 +97,27 @@ export function useAppUserViewModel() {
         setShowEditForm(false);
     }
 
+    const fetchTickets = async () => {
+        try {
+            setLoading(true);
+            const tickets = await getAllUserTickets();
+            setAllTickets(tickets);
+        } catch (err) {
+            console.error("Error while fetching tickets: " + err);
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchTickets();
+    }, []);
+
     return {
         form,
         loading,
         showEditForm,
+        allTickets,
         error,
         updateField,
         submit,

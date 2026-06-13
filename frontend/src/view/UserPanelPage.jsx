@@ -1,15 +1,29 @@
 import React from "react";
-import {useParams} from "react-router-dom";
 import {useAppUserViewModel} from "../viewmodel/useAppUserViewModel";
 
 export default function UserPanelPage() {
 
-    const { id: userId } = useParams();
     const vm = useAppUserViewModel();
 
     return (
         <div>
             <h1>App user info</h1>
+
+            {vm.allTickets.map(ticket => (
+                <div key={ticket.id}>
+                    {ticket.id} <br />
+                    {ticket.createdAt} <br />
+                    {ticket.price} <br />
+                    {ticket.startTime} <br />
+                    {ticket.movieName} <br />
+                    {ticket.seatNumber} <br />
+                    {ticket.row}
+                    {ticket.roomNumber} <br />
+                    {ticket.duration} <br />
+                    {ticket.reserved ? "Bilet aktywny" : "Bilet zarchiwizowany"} <br />
+                    {ticket.userEmail} <br /> <br />
+                </div>
+            ))}
 
             <button onClick={() => vm.startEditing()}>
                 Edytuj dane

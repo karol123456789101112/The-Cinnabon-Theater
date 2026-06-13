@@ -61,7 +61,24 @@ export const getUser = async () => {
     })
 
     if (!response.ok) {
-        throw new Error("Failed to edit user")
+        throw new Error("Failed to get user")
+    }
+
+    return response.json();
+}
+
+export const getAllUserTickets = async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch("http://localhost:8081/tickets/getUserTickets/me", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to get tickets")
     }
 
     return response.json();
